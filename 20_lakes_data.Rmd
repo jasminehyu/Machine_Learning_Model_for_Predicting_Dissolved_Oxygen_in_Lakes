@@ -1,0 +1,335 @@
+---
+title: "20_lakes_data"
+output: html_document
+date: "2024-06-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(arrow)
+library(dplyr)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(viridis)
+```
+
+```{r}
+data_lf<- open_dataset("/Users/jasmineyu/Documents/ lakes21_ML/LakeBeD-US_2024/LowFrequency", 
+                        schema = schema(field("source", string()),
+                                        field("datetime", timestamp()),
+                                        field("lake_id", string()),
+                                        field("depth", double()),
+                                        field("variable", string()),
+                                        field("unit", string()),
+                                        field("observation", double()),
+                                        field("flag", string())))
+
+```
+
+
+```{r}
+
+data_hf <- open_dataset("/Users/jasmineyu/Documents/ lakes21_ML/LakeBeD-US_2024/HighFrequency", 
+                        schema = schema(field("source", string()),
+                                        field("datetime", timestamp()),
+                                        field("lake_id", string()),
+                                        field("depth", double()),
+                                        field("variable", string()),
+                                        field("unit", string()),
+                                        field("observation", double()),
+                                        field("flag", string())))
+
+glimpse(data_hf)
+
+```
+
+```{r}
+
+process_lake_temp_do=function(data,lake,years,var){
+  most_freq_minute= data %>% filter(lake_id == lake, variable == 'do') %>% mutate(date = as.Date(datetime,tz=  "America/Chicago"), minute = format(datetime, "%M")) %>% filter(year(date) %in% years) %>% collect() %>% group_by(minute) %>%summarise(n = n()) %>% arrange(desc(n)) %>% slice(1) %>% pull(minute)
+  
+  print(most_freq_minute)
+  
+  filtered_id_data=data %>% filter(lake_id == lake,format(datetime,"%M")== most_freq_minute) %>% mutate(date= as.Date(datetime,
+  format = "%y/%m/%d",tz="America/Chicago"),time=format(datetime, format = "%H:%M:%S",tz="America/Chicago"))  %>% 
+  filter(year(date) %in% years) %>% 
+  filter(variable == var) %>%
+  group_by(datetime, lake_id, date, time, variable) %>%
+  filter(depth == min(depth)) %>%
+  summarise(observation = mean(observation, na.rm = TRUE)) %>%
+  ungroup() %>%
+  collect() %>% 
+  pivot_wider(names_from = 'variable', values_from = 'observation')
+  
+  return(filtered_var_data)
+  
+}
+```
+
+```{r}
+
+process_lake_data=function(data, lake, years, var){
+  filtered_id_data=data %>% filter(lake_id == lake) %>% mutate(date= as.Date(datetime,
+  format = "%y/%m/%d",tz="America/Chicago"),time=format(datetime, format = "%H:%M:%S",tz="America/Chicago"))  %>% 
+  filter(year(date) %in% years) %>% select(datetime,lake_id,date,time,variable,observation,depth) %>%  collect()
+  
+  filtered_var_data=filtered_id_data %>%
+  filter(variable == var) %>%
+  group_by(datetime, lake_id, date, time, variable) %>%
+  filter(depth == min(depth)) %>%
+  summarise(observation = mean(observation, na.rm = TRUE)) %>%
+  ungroup() %>%
+  pivot_wider(names_from = 'variable', values_from = 'observation')
+  
+  return(filtered_var_data)
+}
+
+
+```
+
+
+
+
+```{r}
+
+process_secchi_data=function(data,lake,years,var,process_list=FALSE){
+  filtered_data= data %>% filter(lake_id == lake) %>% mutate(date= as.Date(datetime,
+  format = "%y/%m/%d",tz="America/Chicago"),time=format(datetime, format = "%H:%M:%S",tz="America/Chicago"))  %>% 
+  filter(year(date) %in% years) %>% select(datetime,lake_id,date,time,variable,observation,depth) %>%  collect() %>% 
+  filter(variable==var) %>% select(-depth) %>% pivot_wider(names_from='variable',values_from='observation')
+  
+  if (process_list) {
+    filtered_data<- filtered_data %>%
+      unnest(cols = c(secchi)) %>%
+      group_by(datetime, date, time, lake_id) %>%
+      summarise(secchi = mean(secchi, na.rm = TRUE)) %>% 
+      ungroup()
+    }
+  
+  return(filtered_data)
+}
+
+```
+
+```{r}
+
+#process_secchi_list=function(data,lake,years,var){
+  #filtered_data= data %>% filter(lake_id == lake) %>% mutate(date= as.Date(datetime,
+  #format = "%y/%m/%d",tz="America/Chicago"),time=format(datetime, format = "%H:%M:%S",tz="America/Chicago"))  %>% 
+  #filter(year(date) %in% years) %>% select(datetime,lake_id,date,time,variable,observation,depth) %>%  collect() %>% 
+  #filter(variable==var) %>% select(-depth) %>% pivot_wider(names_from='variable',values_from='observation') %>% 
+  #unnest(cols = c(secchi)) %>% group_by(datetime,date,time,lake_id) %>% summarise(secchi=mean(secchi)) %>% ungroup()}
+
+```
+
+```{r}
+
+min_depth_tp_me = process_lake_data(data_lf, 'ME', 2016:2022, 'tp')
+min_depth_tn_me= process_lake_data(data_lf, 'ME', 2016:2022, 'tn')
+min_depth_do_lf_me= process_lake_data(data_lf, 'ME', 2016:2022, 'do')%>% rename(do_lf=do)
+```
+
+```{r}
+secchi_me=process_secchi_data(data_lf, 'ME', 2016:2022, 'secchi')
+```
+
+
+```{r}
+join1_me=min_depth_do_me %>% full_join(min_depth_temp_me,by=c("datetime", "lake_id", "date", "time")) %>%  arrange(date) 
+#join1_me %>% filter(is.na(do) & is.na(temp))
+
+
+
+```
+
+```{r}
+
+fill_na_with_approx = function(df, var_name) {
+  non_na_data = df %>% filter(!is.na(!!sym(var_name)))
+  
+   if (nrow(non_na_data) < 2) {
+     message("Not enough non-NA values for variable: ", var_name)
+     return(df)
+  }
+  
+  interpolated = approx(non_na_data$datetime, non_na_data[[var_name]], xout = df$datetime, rule = 1)
+  
+  df[[var_name]] = ifelse(is.na(df[[var_name]]), interpolated$y, df[[var_name]])
+  
+  return(df)
+}
+
+```
+
+```{r}
+
+join2_me = join1_me %>% left_join(min_depth_tp_me, by = c("datetime", "lake_id", "date", "time")) %>% arrange(date) %>% fill_na_with_approx("tp")
+join3_me=join2_me%>% left_join(min_depth_tn_me, by = c("datetime", "lake_id", "date", "time")) %>% arrange(date) %>% fill_na_with_approx("tn")
+join4_me=join3_me%>% left_join(min_depth_do_lf_me, by = c("datetime", "lake_id", "date", "time")) %>% arrange(date) %>% fill_na_with_approx("do_lf")
+
+join5_me=join4_me%>% left_join(secchi_me, by = c("datetime", "lake_id", "date", "time")) %>% arrange(date) %>% fill_na_with_approx("secchi")
+final_version_me=join5_me %>% filter(year(date)>=2017 &year(date)<=2021) %>% drop_na() 
+
+final_version_me 
+
+```
+
+```{r}
+
+final_version_me %>% filter(rowSums(is.na(.))>0)
+
+```
+
+```{r}
+
+process_lake_data=function(data,lake,years,var){
+  filtered_id_data=data %>% filter(lake_id == lake,format(datetime,"%M")=="00") %>% mutate(date= as.Date(datetime,
+  format = "%y/%m/%d",tz="America/Chicago"),time=format(datetime, format = "%H:%M:%S",tz="America/Chicago"))  %>% 
+  filter(year(date) %in% years) %>% select(datetime,lake_id,date,time,variable,observation,depth) %>%  collect()
+  
+  filtered_var_data=filtered_id_data %>%
+    filter(variable == var) %>%
+    group_by(datetime, lake_id, date, time, variable) %>%
+    filter(depth == min(depth)) %>%
+    summarise(observation = mean(observation, na.rm = TRUE)) %>%
+    ungroup() %>%
+    pivot_wider(names_from = 'variable', values_from = 'observation')
+  
+    return(filtered_var_data)
+  
+}
+
+min_depth_do_me = process_lake_data(data_hf, 'ME', 2016:2022, 'do')
+min_depth_temp_me = process_lake_data(data_hf, 'ME', 2016:2022, 'temp')
+
+
+```
+
+```{r}
+
+process_lakes_data=function(data,years,var){
+  filtered_id_data=data %>% filter(lake_id %in%  c("CB","TB","BARC","SUGG","CRAM","LIRO","PRLA","PRPO","TOOK","GL4","SP","TR","FCR","BVR"),format(datetime,"%M")=="00") %>% mutate(date= as.Date(datetime,format = "%y/%m/%d",tz="America/Chicago"),time=format(datetime, format = "%H:%M:%S",tz="America/Chicago"))%>% filter(year(date) %in% years) %>% select(datetime,lake_id,date,time,variable,observation,depth) %>%  collect()
+  
+  filtered_var_data=filtered_id_data %>%
+    filter(variable == var) %>%
+    group_by(datetime, lake_id, date, time, variable) %>%
+    filter(depth == min(depth)) %>%
+    summarise(observation = mean(observation, na.rm = TRUE)) %>%
+    ungroup() %>%
+    pivot_wider(names_from = 'variable', values_from = 'observation')
+  
+    return(filtered_var_data)
+  
+}
+```
+
+```{r}
+
+min_depth_do_lakes=process_lakes_data(data_hf,2016:2022,'do')
+glimpse(min_depth_do_lakes)
+
+
+
+```
+
+```{r}
+
+min_depth_do_me = process_lake_data(data_hf, 'ME', 2016:2022, 'do')
+min_depth_temp_me = process_lake_data(data_hf, 'ME', 2016:2022, 'temp')
+
+
+```
+
+```{r}
+
+process_single_lake <- function(data_hf,data_lf, lake, years) {
+  print(lake)
+  min_depth_do <- process_lake_temp_do(data_hf, lake, years, 'do')
+  min_depth_temp <- process_lake_temp_do(data_hf, lake, years, 'temp')
+  min_depth_tp <- process_lake_data(data_lf, lake, years, 'tp')
+  min_depth_tn <- process_lake_data(data_lf, lake, years, 'tn')
+  min_depth_do_lf <- process_lake_data(data_lf, lake, years, 'do') %>% rename(do_lf = do)
+  
+  if (lake=='FCR'|| lake=='BVR') {
+    message("Secchi depth data wrangling: ", lake)
+    secchi <- process_secchi_data(data_lf, lake, years, 'secchi',TRUE)
+  }else{
+      secchi <- process_secchi_data(data_lf, lake, years, 'secchi')
+  }
+  
+  
+  print(lake)
+  join1 <- min_depth_do %>% full_join(min_depth_temp, by = c("datetime", "lake_id", "date", "time")) %>% arrange(date)
+  join2 <- join1 %>% full_join(min_depth_tp, by = c("datetime", "lake_id", "date", "time")) %>% arrange(date) %>% fill_na_with_approx("tp")
+  join3 <- join2 %>% full_join(min_depth_tn, by = c("datetime", "lake_id", "date", "time")) %>% arrange(date) %>% fill_na_with_approx("tn")
+  join4 <- join3 %>% full_join(min_depth_do_lf, by = c("datetime", "lake_id", "date", "time")) %>% arrange(date) %>% fill_na_with_approx("do_lf")
+  join5 <- join4 %>% full_join(secchi, by = c("datetime", "lake_id", "date", "time")) %>% arrange(date) %>% fill_na_with_approx("secchi")
+  
+  final_version <- join5 %>% filter(year(date) >= 2017 & year(date) <= 2021) %>% drop_na()
+  
+  return(final_version)
+}
+
+
+
+```
+
+```{r}
+
+
+lake_me=process_single_lake(data_hf, data_lf, 'ME', 2016:2022)
+
+
+```
+
+```{r}
+
+
+test_bvr=process_single_lake(data_hf, data_lf, "BVR", 2016:2022)
+test_bvr
+
+```
+
+```{r}
+
+lakes=c("CB", "TB", "BARC", "SUGG", "CRAM", "LIRO", "PRLA", "PRPO", "TOOK","SP", "TR","FCR", "BVR")
+list_of_20_df=lapply(lakes,function(lake){process_single_lake(data_hf, data_lf, lake, 2016:2022)})
+combined_13_lakes=bind_rows(list_of_20_df)
+print('almost')
+glimpse(combined_13_lakes)
+
+```
+```{r}
+
+write.csv(lake_me,"/Users/jasmineyu/Documents/ lakes21_ML/lake_me.csv",row.names = FALSE)
+```
+
+```{r}
+write.csv(combined_13_lakes,"/Users/jasmineyu/Documents/ lakes21_ML/combined_13_lakes.csv",row.names = FALSE)
+```
+
+```{r}
+lake_me %>% ggplot(aes(temp,do))+geom_point()+geom_smooth(sd=FALSE)
+
+
+```
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
