@@ -28,7 +28,7 @@
 
 ### Model Experiment
 
-To test the model's robustness with sparse data, I reduced the dataset to one-fourth its size and compared the results with the full dataset.
+To test the model's robustness with sparse data, I reduced the dataset to one-fourth of its original size and compared the results with the full dataset. ** The following files show the model training process in Jupyter Notebook. **
 
 - Transfer Learning Model (TL)
   1. [tl_2372.ipynb](./lakes21_parquet/tl_2372.ipynb) : TL model tested on 2372 data points
