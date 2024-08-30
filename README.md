@@ -7,3 +7,5 @@
 
 - The findings demonstrate that transfer learning not only enhances prediction accuracy but also promotes scientific research and technological innovation with more precise and interpretable models.
 
+## Data Sources
+### Data were collected from two primary sources: high-frequency datasets and [low-frequency datasets](./lakes21_parquet)
