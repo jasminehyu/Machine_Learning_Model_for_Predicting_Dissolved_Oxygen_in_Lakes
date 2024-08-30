@@ -9,3 +9,13 @@
 
 ### Data Sources
 -  Data were collected from two primary sources: high-frequency datasets and [low-frequency datasets](./lakes21_parquet/LowFrequency)
+
+### Data Preprocessing
+- [Data preprocessing](./) involved the following key steps to ensure consistency and usability:
+  1. Data Filtering
+  2. Downsampling
+  3. Data Merging
+  4. Interpolation
+ 
+This preprocessing resulted in two datasets: one specific to Lake Mendota with hourly measurements of surface DO, temperature, TP, TN, and Secchi depth, and another encompassing the same variables for the other 13 lakes.
+
