@@ -50,6 +50,20 @@ Figure 1: Observed dissolved oxygen (DO) levels (dashed green line) and the mach
 ![TL_training_result](./images/TL_training_result.png)
 Figure 2: Observed dissolved oxygen (DO) levels (dashed green line) and the transfer learning(TL) model's predictions (solid orange line) over time for the training dataset.
 
+![Testing_full](./images/testing_full.png)
+Figure 3: Observed dissolved oxygen (DO) levels (green line) and predictions made by both machine learning (ML) models (orange line) and transfer learning (TL) models (blue line) over time, using the full size testing dataset.
+
+![Testing_onefourth](./images/testing_onefourth.png)
+Figure 4: Observed dissolved oxygen (DO) levels (green line) and predictions made by both machine learning (ML) models (orange line) and transfer learning (TL) models (blue line) over time, using a testing dataset reduced to 1/4 of its original size.
+
+![boxplot](./images/boxplot.png)
+Figure 5: The error distribution (Observed - Predicted) of Machine Learning (ML) and Transfer Learning (TL) models tested on datasets of different sizes. The four boxplots represent:
+ 
+- ML_2372: ML model tested on 2372 data points
+- ML_9487: ML model tested on 9487 data points
+- TL_2372: TL model tested on 2372 data points
+- TL_9487: TL model tested on 9487 data points
+
 
 
 
