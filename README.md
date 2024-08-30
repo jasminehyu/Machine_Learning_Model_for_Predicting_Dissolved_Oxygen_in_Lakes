@@ -26,6 +26,12 @@
  	
   3.  Evaluation: At the end of each training epoch, the model's performance was assessed both on train and test sets split sequentially according to a predefined train-test ratio using the Root Mean Square Error (RMSE) metric.
 
+### Model Experiment
+
+- Transfer Learning Model (TL)
+  1. [tl_4743.ipynb](./lakes21_parquet/tl_4743.ipynb) : TL model tested on 2372 data points!
+
+  2. [tl_9487.ipynb](./lakes21_parquet/tl_9487.ipynb) :
 
 
 
