@@ -38,7 +38,10 @@ To test the model's robustness with sparse data, I reduced the dataset to one-fo
 
 
 - Machine Learning Model (ML)
-  1. [ml_2372.ipynb](./lakes21_parquet/ml_2372.ipynb) : ML model tested on 2372 data points
+  1. **[ml_2372.ipynb](./lakes21_parquet/ml_2372.ipynb)** : ML model tested on 2372 data points
 
-  2. [ml_9487.ipynb](./lakes21_parquet/ml_9487.ipynb) : ML model tested on 9487 data points
+  2. **[ml_9487.ipynb](./lakes21_parquet/ml_9487.ipynb)** : ML model tested on 9487 data points
+ 
+### Result
+
 
