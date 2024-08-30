@@ -1,5 +1,5 @@
-### Predicting Dissolved Oxygen Dynamics in Lake Mendota using Transfer Learning
-# The project explores transfer learning models for predicting dissolved oxygen levels in Lake Mendota. 
+# Predicting Dissolved Oxygen Dynamics in Lake Mendota using Transfer Learning
+### The project explores transfer learning models for predicting dissolved oxygen levels in Lake Mendota. 
 
 The approach addresses the challenge of limited data in environmental science by transferring underlying trends from related environments, enhancing prediction accuracy and reliability even with sparse target environment data. 
 
