@@ -45,7 +45,11 @@ To test the model's robustness with sparse data, I reduced the dataset to one-fo
 ### Result
 
 ![ML_training_result](./images/ML_training_result.png)
-Observed dissolved oxygen (DO) levels (dashed green line) and the machine learning(ML) model's predictions (solid orange line) over time for the training dataset.
+Figure 1: Observed dissolved oxygen (DO) levels (dashed green line) and the machine learning(ML) model's predictions (solid orange line) over time for the training dataset.
+
+![TL_training_result](./images/TL_training_result.png)
+Figure 2: Observed dissolved oxygen (DO) levels (dashed green line) and the transfer learning(TL) model's predictions (solid orange line) over time for the training dataset.
+
 
 
 
