@@ -12,7 +12,7 @@
 
 ### Data Preprocessing
 - [Data preprocessing](./20_lakes_data.Rmd) involved the following key steps to ensure consistency and usability:
-  **1. Data Filtering**
+  **1. Data Filtering**/n
   **2. Downsampling**
   **3. Data Merging**
   **4. Interpolation**
