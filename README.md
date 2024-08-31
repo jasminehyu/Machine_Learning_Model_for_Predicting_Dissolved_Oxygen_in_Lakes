@@ -31,13 +31,13 @@
 To test the model's robustness with sparse data, I reduced the dataset to one-fourth of its original size and compared the results with the full dataset. 
 **The following files show the model training process in Jupyter Notebook.**
 
-- Transfer Learning Model (TL)
+- Transfer Learning Models (TL)
   1. **[tl_2372.ipynb](./lakes21_parquet/tl_2372.ipynb)** : TL model tested on 2372 data points
 
   2. **[tl_9487.ipynb](./lakes21_parquet/tl_9487.ipynb)** : TL model tested on 9487 data points
 
 
-- Machine Learning Model (ML)
+- Machine Learning Models (ML)
   1. **[ml_2372.ipynb](./lakes21_parquet/ml_2372.ipynb)** : ML model tested on 2372 data points
 
   2. **[ml_9487.ipynb](./lakes21_parquet/ml_9487.ipynb)** : ML model tested on 9487 data points
