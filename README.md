@@ -42,7 +42,7 @@ To test the model's robustness with sparse data, I reduced the dataset to one-fo
 
   2. **[ml_9487.ipynb](./lakes21_parquet/ml_9487.ipynb)** : ML model tested on 9487 data points
  
-### Result
+### Results
 
 ![ML_training_result](./images/ML_training_result.png)
 Figure 1: Observed dissolved oxygen (DO) levels (dashed green line) and the machine learning(ML) model's predictions (solid orange line) over time for the training dataset.
