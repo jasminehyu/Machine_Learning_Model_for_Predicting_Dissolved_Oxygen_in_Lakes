@@ -8,7 +8,7 @@
 - The findings demonstrate that transfer learning not only enhances prediction accuracy but also promotes scientific research and technological innovation with more precise and interpretable models.
 
 ### Data Sources
--  Data were collected from two primary sources: high-frequency datasets and [low-frequency datasets](./lakes21_parquet/LowFrequency)
+-  Data were collected from two primary sources: [high-frequency datasets](https://drive.google.com/drive/folders/1SzX_l1dh_bPDzhLVMQ3JXg4JciRa8Ca3?usp=drive_link) and [low-frequency datasets](./lakes21_parquet/LowFrequency)
 
 ### Data Preprocessing
 - [Data preprocessing](./20_lakes_data.Rmd) involved the following key steps to ensure consistency and usability:
