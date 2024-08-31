@@ -59,10 +59,10 @@ Figure 4: Observed dissolved oxygen (DO) levels (green line) and predictions mad
 ![boxplot](./images/boxplot.png)
 Figure 5: The error distribution (Observed - Predicted) of Machine Learning (ML) and Transfer Learning (TL) models tested on datasets of different sizes. The four boxplots represent:
  
-- ML_2372: ML model tested on 2372 data points
-- ML_9487: ML model tested on 9487 data points
-- TL_2372: TL model tested on 2372 data points
-- TL_9487: TL model tested on 9487 data points
+- ML_2372: ML model trained and tested on 2372 data points
+- ML_9487: ML model trained and tested on 9487 data points
+- TL_2372: TL model trained and tested on 2372 data points
+- TL_9487: TL model trained and tested on 9487 data points
 
 
 
