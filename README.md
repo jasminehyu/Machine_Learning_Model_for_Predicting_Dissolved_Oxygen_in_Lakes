@@ -11,7 +11,7 @@
 -  Data were collected from two primary sources: [high-frequency datasets](https://drive.google.com/drive/folders/1SzX_l1dh_bPDzhLVMQ3JXg4JciRa8Ca3?usp=drive_link) and [low-frequency datasets](https://drive.google.com/drive/folders/1NQlAPDdyQ6qlAD4XcJvFIkxsWLLUrEHr?usp=drive_link)
 
 ### Data Preprocessing
-- [Data preprocessing](./20_lakes_data.Rmd) involved the following key steps to ensure consistency and usability:
+- [Data preprocessing](./20_lakes_data.Rmd) involved the following key steps to ensure consistency and usability:  
   **1. Data Filtering**  
   **2. Downsampling**  
   **3. Data Merging**  
