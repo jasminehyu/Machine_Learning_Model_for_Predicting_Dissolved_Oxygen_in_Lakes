@@ -12,10 +12,10 @@
 
 ### Data Preprocessing
 - [Data preprocessing](./20_lakes_data.Rmd) involved the following key steps to ensure consistency and usability:
-  **1. Data Filtering**/n
-  **2. Downsampling**
-  **3. Data Merging**
-  **4. Interpolation**
+  **1. Data Filtering**  
+  **2. Downsampling**  
+  **3. Data Merging**  
+  **4. Interpolation**  
  
 - This preprocessing resulted in two datasets: [lake_me_year.csv](./lakes21_parquet/lake_me_year.csv), specific to Lake Mendota with hourly measurements of surface DO, temperature, TP, TN, and Secchi depth, and [combined_13_lakes.csv](./lakes21_parquet/combined_13_lakes.csv) encompassing the same variables for the other 13 lakes.
 
