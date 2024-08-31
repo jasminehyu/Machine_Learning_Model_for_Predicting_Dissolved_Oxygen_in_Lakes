@@ -20,11 +20,11 @@
 - This preprocessing resulted in two datasets: [lake_me_year.csv](./lakes21_parquet/lake_me_year.csv), specific to Lake Mendota with hourly measurements of surface DO, temperature, TP, TN, and Secchi depth, and [combined_13_lakes.csv](./lakes21_parquet/combined_13_lakes.csv) encompassing the same variables for the other 13 lakes.
 
 ### LSTM Models Training
-  1.	Initialization: Model hyperparameters, including model type, hidden layer size, output size, number of layers, and learning rate, were initialized to define the model architecture.
+  1.	**Initialization**: Model hyperparameters, including model type, hidden layer size, output size, number of layers, and learning rate, were initialized to define the model architecture.
   
-  2.	Data Samples Generating: We define the lookback window, horizon window, and stride to create individual samples and determine the total number of samples. Also, specify the batch size for single training iteration. The data is fed into the model in batches. For each batch, the model computes the loss and adjusts its parameters using an optimization algorithm to minimize this loss.
+  2.	**Data Samples Generating**: We define the lookback window, horizon window, and stride to create individual samples and determine the total number of samples. Also, specify the batch size for single training iteration. The data is fed into the model in batches. For each batch, the model computes the loss and adjusts its parameters using an optimization algorithm to minimize this loss.
  	
-  3.  Evaluation: At the end of each training epoch, the model's performance was assessed both on train and test sets split sequentially according to a predefined train-test ratio using the Root Mean Square Error (RMSE) metric.
+  3.  **Evaluation**: At the end of each training epoch, the model's performance was assessed both on train and test sets split sequentially according to a predefined train-test ratio using the Root Mean Square Error (RMSE) metric.
 
 ### Model Experiment
 
